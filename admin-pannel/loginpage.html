@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HoneyBee Admin Login</title>
+
+  <style>
+    body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to bottom right, #fffbe6, #fff2b0);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  padding: 15px; /* add padding so content doesn't touch edges on small screens */
+  box-sizing: border-box;
+}
+
+.login-box {
+  background: #fffdf0;
+  border: 3px solid #f2c94c;
+  border-radius: 20px;
+  padding: 30px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  box-sizing: border-box;
+}
+
+.logo {
+  width: 90px;
+  margin-bottom: 15px;
+  height: auto;
+}
+
+h1 {
+  margin: 10px 0;
+  color: #e59b00;
+  font-size: 1.8rem;
+}
+
+input {
+  width: 90%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 2px solid #f2c94c;
+  border-radius: 10px;
+  font-size: 16px;
+  transition: 0.3s;
+  box-sizing: border-box;
+}
+
+input:focus {
+  border-color: #e59b00;
+  outline: none;
+}
+
+button {
+  background-color: #f2c94c;
+  color: #4a3d00;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: 0.3s;
+}
+
+button:hover {
+  background-color: #e0b323;
+}
+
+.error {
+  color: red;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+/* Responsive adjustments */
+
+/* Medium devices (tablets) */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 1.6rem;
+  }
+
+  .login-box {
+    max-width: 350px;
+    padding: 25px;
+  }
+
+  input {
+    font-size: 15px;
+    padding: 10px;
+    width: 95%;
+  }
+
+  button {
+    font-size: 15px;
+    padding: 10px 20px;
+  }
+}
+
+
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <img src="./images/logo.png" alt="Bee Logo" class="logo" />
+    <h1>Admin Login</h1>
+    <input type="text" id="username" placeholder="Username" />
+    <input type="password" id="password" placeholder="Password" />
+    <button onclick="login()">Login</button>
+    <p id="errorMsg" class="error"></p>
+  </div>
+
+  <script>
+    const ADMIN_USERNAME = "admin";
+    const ADMIN_PASSWORD = "honey123";
+
+    function login() {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const errorMsg = document.getElementById("errorMsg");
+
+      if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+        localStorage.setItem("isLoggedIn", "true");
+        window.location.href = "adminpannel.html"; // redirect to your admin panel
+      } else {
+        errorMsg.textContent = "🐝 Invalid username or password!";
+      }
+    }
+    function logout() {
+    localStorage.removeItem("isLoggedIn");
+    alert("Logged out successfully!");
+    window.location.href = "login.html";
+  }
+
+  </script>
+</body>
+</html>

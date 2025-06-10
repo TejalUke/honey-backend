@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Reports - HoneyBee</title>
+  
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #fffbea;
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.sidebar {
+  width: 240px;
+  background: #f2c94c;
+  color: #4a3d00;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 0;
+  border-right: 3px solid #e0b323;
+}
+
+.sidebar .logo {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.sidebar .logo img { width: 60px; }
+
+.sidebar h2 {
+  text-align: center;
+  font-size: 22px;
+  margin-top: 10px;
+}
+
+.nav-links {
+  flex-grow: 1;
+  padding: 0 20px;
+}
+
+.nav-links a {
+  display: block;
+  padding: 12px 15px;
+  margin: 8px 0;
+  color: #4a3d00;
+  background: #fff4c4;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: background 0.3s;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  background: #fff1aa;
+}
+
+.logout-btn {
+  margin: 20px;
+  background: #f76c5e;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background: #e8564b;
+}
+
+.main-content {
+  flex-grow: 1;
+  padding: 30px;
+  overflow-y: auto;
+  position: relative;
+}
+
+.main-header {
+  font-size: 26px;
+  margin-bottom: 20px;
+  color: #e59b00;
+}
+
+.report-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.report-card {
+  background: #fffdf0;
+  border: 2px solid #f2c94c;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+.report-card h3 {
+  font-size: 18px;
+  color: #4a3d00;
+  margin-bottom: 8px;
+}
+
+.report-card p {
+  font-size: 22px;
+  font-weight: bold;
+  color: #e59b00;
+}
+
+.chart-placeholder {
+  margin-top: 40px;
+  background: #fff4c4;
+  height: 300px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #aaa;
+  font-size: 18px;
+}
+
+/* Responsive Styles */
+
+/* Tablets and smaller desktops */
+@media (max-width: 992px) {
+  body {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    border-right: none;
+    border-bottom: 3px solid #e0b323;
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 10px 0;
+  }
+
+  .sidebar .logo {
+    margin: 0 20px 0 10px;
+    flex-shrink: 0;
+  }
+
+  .sidebar h2 {
+    font-size: 18px;
+    margin: 0 20px 0 0;
+    align-self: center;
+  }
+
+  .nav-links {
+    padding: 0 10px;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 10px;
+    overflow-x: auto;
+  }
+
+  .nav-links a {
+    flex-shrink: 0;
+    padding: 10px 12px;
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  .logout-btn {
+    margin: 0 10px;
+    align-self: center;
+    padding: 8px 12px;
+  }
+
+  .main-content {
+    padding: 20px 15px;
+    height: auto;
+  }
+}
+
+  </style>
+
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="logo">
+      <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" alt="Bee Logo">
+      <h2>HoneyBee</h2>
+    </div>
+    <div class="nav-links">
+      <a href="dashboard.html">📊 Dashboard</a>
+      <a href="product.html">🍯 Products</a>
+      <a href="order.html">🛒 Orders</a>
+      <a href="customers.html">👥 Customers</a>
+      <a href="reports.html" class="active">📈 Reports</a>
+      <a href="settings.html">⚙️ Settings</a>
+    </div>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="main-header">📈 Reports</div>
+
+    <div class="report-cards">
+      <div class="report-card">
+        <h3>Total Products</h3>
+        <p>24</p>
+      </div>
+      <div class="report-card">
+        <h3>Total Customers</h3>
+        <p>56</p>
+      </div>
+      <div class="report-card">
+        <h3>Total Orders</h3>
+        <p>78</p>
+      </div>
+      <div class="report-card">
+        <h3>Total Revenue</h3>
+        <p>₹52,400</p>
+      </div>
+    </div>
+
+    <div class="chart-placeholder">
+      [ Analytics Chart Placeholder ]
+    </div>
+  </div>
+
+  <script>
+    if (localStorage.getItem("isLoggedIn") !== "true") {
+      window.location.href = "login.html";
+    }
+
+    function logout() {
+        localStorage.removeItem("isLoggedIn");
+        alert("Logged out successfully!");
+        window.location.href = "login.html";
+        }
+
+  </script>
+
+</body>
+</html>

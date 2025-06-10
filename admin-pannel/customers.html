@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>HoneyBee Customers</title>
+  <style>
+    * {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #fffbea;
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  flex-direction: row;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 240px;
+  background: #f2c94c;
+  color: #4a3d00;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 0;
+  border-right: 3px solid #e0b323;
+  flex-shrink: 0;
+}
+
+.sidebar .logo {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.sidebar .logo img {
+  width: 60px;
+  height: auto;
+}
+
+.sidebar h2 {
+  text-align: center;
+  font-size: 22px;
+  margin-top: 10px;
+}
+
+.nav-links {
+  flex-grow: 1;
+  padding: 0 20px;
+}
+
+.nav-links a {
+  display: block;
+  padding: 12px 15px;
+  margin: 8px 0;
+  color: #4a3d00;
+  background: #fff4c4;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: background 0.3s;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  background: #fff1aa;
+}
+
+.logout-btn {
+  margin: 20px;
+  background: #f76c5e;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background: #e8564b;
+}
+
+/* Main Content */
+.main-content {
+  flex-grow: 1;
+  padding: 30px;
+  overflow-y: auto;
+  position: relative;
+  min-width: 0; /* Fix flex overflow */
+}
+
+.main-header {
+  font-size: 26px;
+  color: #e59b00;
+  margin-bottom: 20px;
+}
+
+/* Table styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fffdf0;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  table-layout: fixed; /* Help cell sizing */
+}
+
+th, td {
+  padding: 12px 15px;
+  text-align: left;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+th {
+  background-color: #f2c94c;
+  color: #4a3d00;
+}
+
+tr:nth-child(even) {
+  background-color: #fff4c4;
+}
+
+tr:hover {
+  background-color: #fff1aa;
+}
+
+/* Responsive styles */
+
+/* For tablets and medium screens */
+@media (max-width: 992px) {
+  body {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 3px solid #e0b323;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 20px;
+  }
+
+  .sidebar .logo {
+    margin-bottom: 0;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .sidebar h2 {
+    font-size: 20px;
+    margin: 0;
+  }
+
+  .nav-links {
+    flex-grow: 2;
+    display: flex;
+    justify-content: space-around;
+    padding: 0;
+  }
+
+  .nav-links a {
+    margin: 0 5px;
+    padding: 8px 10px;
+    font-size: 0.9rem;
+  }
+
+  .logout-btn {
+    margin: 0 10px;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+  }
+
+  .main-content {
+    padding: 20px 15px;
+  }
+
+  .main-header {
+    font-size: 22px;
+    margin-bottom: 15px;
+  }
+
+  table {
+    font-size: 0.9rem;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="logo">
+      <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" alt="Bee Logo">
+      <h2>HoneyBee</h2>
+    </div>
+    <div class="nav-links">
+      <a href="dashboard.html">📊 Dashboard</a>
+      <a href="product.html">🍯 Products</a>
+      <a href="orders.html">🛒 Orders</a>
+      <a href="customers.html" class="active">👥 Customers</a>
+      <a href="reports.html">📈 Reports</a>
+      <a href="settings.html">⚙️ Settings</a>
+    </div>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="main-header">Customer Records</div>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Address</th>
+          <th>Join Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>Priya Sharma</td>
+          <td>priya@example.com</td>
+          <td>9876543210</td>
+          <td>Pune, Maharashtra</td>
+          <td>2024-08-12</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>Rohit Mehta</td>
+          <td>rohit@example.com</td>
+          <td>9822334455</td>
+          <td>Jaipur, Rajasthan</td>
+          <td>2024-09-02</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>Anjali Verma</td>
+          <td>anjali@example.com</td>
+          <td>9811223344</td>
+          <td>Indore, MP</td>
+          <td>2024-11-25</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    if (localStorage.getItem("isLoggedIn") !== "true") {
+      window.location.href = "login.html";
+    }
+
+    function logout() {
+    localStorage.removeItem("isLoggedIn");
+    alert("Logged out successfully!");
+    window.location.href = "login.html";
+    }
+
+  </script>
+</body>
+</html>
