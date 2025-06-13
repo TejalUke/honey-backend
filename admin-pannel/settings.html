@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>HoneyBee Orders</title>
+  <style>
+    * {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #fffbea;
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  flex-direction: row;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 240px;
+  background: #f2c94c;
+  color: #4a3d00;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 0;
+  border-right: 3px solid #e0b323;
+  flex-shrink: 0;
+}
+
+.sidebar .logo {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.sidebar .logo img {
+  width: 60px;
+  height: auto;
+}
+
+.sidebar h2 {
+  text-align: center;
+  font-size: 22px;
+  margin-top: 10px;
+}
+
+.nav-links {
+  flex-grow: 1;
+  padding: 0 20px;
+}
+
+.nav-links a {
+  display: block;
+  padding: 12px 15px;
+  margin: 8px 0;
+  color: #4a3d00;
+  background: #fff4c4;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: background 0.3s;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  background: #fff1aa;
+}
+
+.logout-btn {
+  margin: 20px;
+  background: #f76c5e;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background: #e8564b;
+}
+
+/* Main Content */
+.main-content {
+  flex-grow: 1;
+  padding: 30px;
+  overflow-y: auto;
+  position: relative;
+  min-width: 0; /* Fix for flexbox overflow */
+}
+
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 26px;
+  margin-bottom: 20px;
+  color: #e59b00;
+}
+
+/* Settings Box */
+.settings-box {
+  background: #fff9d1;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.settings-box input {
+  padding: 12px;
+  font-size: 16px;
+  border: 2px solid #f2c94c;
+  border-radius: 8px;
+  outline: none;
+  background: #fff;
+  transition: border-color 0.3s;
+}
+
+.settings-box input:focus {
+  border-color: #e0b323;
+}
+
+.settings-box button {
+  padding: 12px;
+  background-color: #f2c94c;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.settings-box button:hover {
+  background-color: #e0b323;
+}
+
+.settings-box .message {
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+}
+.input-wrapper {
+  position: relative;
+}
+
+.input-wrapper input {
+  width: 100%;
+  padding-right: 40px; /* Space for the eye icon */
+}
+
+.toggle-eye {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 18px;
+  color: #888;
+  user-select: none;
+}
+
+
+@media (max-width: 600px) {
+  .main-content {
+    padding: 20px;
+  }
+
+  .settings-box {
+    width: 100%;
+    padding: 20px;
+  }
+}
+
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="logo">
+      <img src="./images/logo.png" alt="Bee Logo">
+      <h2>HoneyBee</h2>
+    </div>
+    <div class="nav-links">
+      <a href="dashboard.html">📊 Dashboard</a>
+      <a href="product.html">🍯 Products</a>
+      <a href="./order.html" class="active">🛒 Orders</a>
+      <a href="customers.html">👥 Customers</a>
+      <a href="reports.html">📈 Reports</a>
+      <a href="settings.html">⚙️ Settings</a>
+    </div>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="main-header">Settings</div>
+
+   <div class="settings-box">
+    <!-- <img src="./images/logo.png" alt="Bee Logo" class="logo" /> -->
+    <!-- <h1>Change Password</h1> -->
+
+<div class="input-wrapper">
+  <input type="password" id="currentPassword" placeholder="Current Password" />
+  <span class="toggle-eye" onclick="togglePassword('currentPassword', this)">👁️</span>
+</div>
+
+<div class="input-wrapper">
+  <input type="password" id="newPassword" placeholder="New Password" />
+  <span class="toggle-eye" onclick="togglePassword('newPassword', this)">👁️</span>
+</div>
+
+<div class="input-wrapper">
+  <input type="password" id="confirmPassword" placeholder="Confirm New Password" />
+  <span class="toggle-eye" onclick="togglePassword('confirmPassword', this)">👁️</span>
+</div>
+
+<button onclick="changePassword()">Update Password</button>
+<p id="message" class="message"></p>
+
+  </div>
+
+ <script>
+  // Ensure admin password is set once
+
+
+ function togglePassword(fieldId, eyeIcon) {
+  const field = document.getElementById(fieldId);
+  if (field.type === "password") {
+    field.type = "text";
+    eyeIcon.textContent = "🙈"; // eye closed
+  } else {
+    field.type = "password";
+    eyeIcon.textContent = "👁️"; // eye open
+  }
+}
+
+  function getStoredPassword() {
+    return localStorage.getItem("adminPassword");
+  }
+
+  function changePassword() {
+    const current = document.getElementById("currentPassword").value.trim();
+    const newPass = document.getElementById("newPassword").value.trim();
+    const confirm = document.getElementById("confirmPassword").value.trim();
+    const message = document.getElementById("message");
+
+    const storedPassword = getStoredPassword();
+
+    if (current !== storedPassword) {
+      message.textContent = "❌ Current password is incorrect.";
+      message.style.color = "red";
+      return;
+    }
+
+    if (newPass.length < 3) {
+      message.textContent = "⚠️ Password must be at least 3 characters.";
+      message.style.color = "orange";
+      return;
+    }
+
+    if (newPass !== confirm) {
+      message.textContent = "❌ New passwords do not match.";
+      message.style.color = "red";
+      return;
+    }
+
+    localStorage.setItem("adminPassword", newPass);
+    message.textContent = "✅ Password updated successfully!";
+    message.style.color = "green";
+
+    // Optional: clear fields
+    document.getElementById("currentPassword").value = "";
+    document.getElementById("newPassword").value = "";
+    document.getElementById("confirmPassword").value = "";
+  }
+
+  function logout() {
+    localStorage.removeItem("isLoggedIn");
+    alert("Logged out successfully!");
+    window.location.href = "loginpage.html";
+  }
+</script>
+</body>
+</html>

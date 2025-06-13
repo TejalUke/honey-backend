@@ -120,24 +120,26 @@ button:hover {
 
   <script>
     const ADMIN_USERNAME = "admin";
-    const ADMIN_PASSWORD = "123";
 
-    function login() {
-      const username = document.getElementById("username").value.trim();
-      const password = document.getElementById("password").value.trim();
-      const errorMsg = document.getElementById("errorMsg");
+function login() {
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value.trim();
+  const errorMsg = document.getElementById("errorMsg");
 
-      if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-        localStorage.setItem("isLoggedIn", "true");
-        window.location.href = "adminpannel.html"; // redirect to your admin panel
-      } else {
-        errorMsg.textContent = "🐝 Invalid username or password!";
-      }
-    }
+  const storedPassword = localStorage.getItem("adminPassword") || "123";
+
+  if (username === ADMIN_USERNAME && password === storedPassword) {
+    localStorage.setItem("isLoggedIn", "true");
+    window.location.href = "adminpanel.html";
+  } else {
+    errorMsg.textContent = "🐝 Invalid username or password!";
+  }
+}
+
     function logout() {
     localStorage.removeItem("isLoggedIn");
     alert("Logged out successfully!");
-    window.location.href = "login.html";
+    window.location.href = "loginpage.html";
   }
 
   </script>

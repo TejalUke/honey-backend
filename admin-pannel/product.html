@@ -125,7 +125,7 @@ body {
 .product-card img {
   width: 100%;
   border-radius: 12px;
-  height: 160px;
+  height: 220px;
   object-fit: cover;
   margin-bottom: 12px;
 }
@@ -192,7 +192,7 @@ body {
   background: white;
   border-radius: 12px;
   padding: 25px;
-  width: 400px;
+  width: 500px;
   max-width: 90%;
   box-shadow: 0 0 20px rgba(0,0,0,0.2);
 }
@@ -223,11 +223,12 @@ body {
   border-radius: 6px;
   cursor: pointer;
   margin-top: 10px;
+  margin-left: 200px;
 }
 
 .modal-content .close-btn {
   background: #999;
-  margin-left: 10px;
+  margin-left: 20px;
 }
 
 /* ===== RESPONSIVE ===== */
@@ -391,13 +392,13 @@ body {
   <!-- Sidebar -->
   <div class="sidebar">
     <div class="logo">
-      <img src="../images/logo.png" alt="Bee Logo">
+      <img src="./images/logo.png" alt="Bee Logo">
       <h2>HoneyBee</h2>
     </div>
-    <div class="nav-links">
-      <a href="dashboard.html">📊 Dashboard</a>
-      <a href="products.html" class="active">🍯 Products</a>
-      <a href="./order.html">🛒 Orders</a>
+        <div class="nav-links">
+      <a href="adminpanel.html">📊 Dashboard</a>
+      <a href="product.html" class="active">🍯 Products</a>
+      <a href="order.html">🛒 Orders</a>
       <a href="customers.html">👥 Customers</a>
       <a href="reports.html">📈 Reports</a>
       <a href="settings.html">⚙️ Settings</a>
@@ -408,200 +409,235 @@ body {
   <!-- Main Content -->
   <div class="main-content">
     <div class="main-header">
-      <span>Product Management</span>
-      <button class="add-btn" onclick="showModal()">+ Add Product</button>
+     Product Management
+      <button class="add-btn" onclick="showAddModal()">+ Add Product</button>
     </div>
 
-    <div class="product-grid">
-      <!-- Example Product Card -->
-      <div class="product-card">
-        <img src="https://images.unsplash.com/photo-1611415518015-b83a3f4aa0d0?auto=format&fit=crop&w=500&q=60" />
-        <h3>Raw Forest Honey</h3>
-        <p>100% pure honey sourced from forest beehives.</p>
-        <div class="price">₹299 / 500ml</div>
-        <div class="actions">
-          <button class="edit">Edit</button>
-          <button class="delete">Delete</button>
-        </div>
-      </div>
-    </div>
+    <div class="product-grid"></div>
   </div>
 
   <!-- Modal -->
-<!-- Modal -->
-<div class="modal" id="productModal">
+<!-- ADD Product Modal -->
+<div class="modal" id="productAddModal">
   <div class="modal-content">
-    <h2>Add / Edit Product</h2>
-    <input type="text" id="pName" placeholder="Product Name" />
-    <textarea id="pDesc" placeholder="Product Description"></textarea>
-
+    <h2>Add Product</h2>
+    <input type="text" id="addName" placeholder="Product Name" />
+    <textarea id="addDesc" placeholder="Product Description"></textarea>
     <div style="display: flex; gap: 10px;">
-      <input type="number" id="pAmount" placeholder="Amount" style="flex: 1;" />
-      <select id="pCurrency" style="flex: 1;">
-        <option value="₹">₹ Rupees</option>
-        <option value="$">$ Dollar</option>
-        <option value="€">€ Euro</option>
-        <option value="¥">¥ Yen</option>
-      </select>
-      <input type="text" id="pQty" placeholder="Quantity (e.g. 500ml)" style="flex: 1;" />
+      <input type="number" id="addAmount" placeholder="Amount" style="flex: 1;" />
+      <input type="text" id="addQty" placeholder="Quantity (e.g. 500ml)" style="flex: 1;" />
     </div>
-
-    <input type="file" id="pImage" accept="image/*" />
-    <input type="url" id="pVideo" placeholder="Video URL (optional)" />
-
-    <div style="display: flex; justify-content: flex-end;">
-      <button onclick="hideModal()" class="close-btn">Cancel</button>
+    <input type="file" id="addImage" accept="image/*" />
+    <div style="justify-content: flex-end;">
+      <button onclick="hideAddModal()" class="close-btn">Cancel</button>
       <button onclick="addProduct()">Save Product</button>
     </div>
   </div>
 </div>
 
+<!-- EDIT Product Modal -->
+<div class="modal" id="productEditModal">
+  <div class="modal-content">
+    <h2>Edit Product</h2>
+    <input type="text" id="editName" placeholder="Product Name" />
+    <textarea id="editDesc" placeholder="Product Description"></textarea>
+    <div style="display: flex; gap: 10px;">
+      <input type="number" id="editAmount" placeholder="Amount" style="flex: 1;" />
+      <input type="text" id="editQty" placeholder="Quantity (e.g. 500ml)" style="flex: 1;" />
+    </div>
+    <img id="previewImage" src="" style="max-height: 120px; display: none; margin: 10px 0;" />
+    <input type="file" id="editImage" accept="image/*" />
+    <div style=" justify-content: flex-end;">
+      <button onclick="hideEditModal()" class="close-btn">Cancel</button>
+      <button onclick="updateProduct()">Update Product</button>
+    </div>
+  </div>
+</div>
 
 
 <script>
-  if (localStorage.getItem("isLoggedIn") !== "true") {
-    window.location.href = "login.html";
+  const API_URL = 'products.php'; // Make sure this path is correct relative to your HTML file
+  const productGrid = document.querySelector(".product-grid");
+  let products = [];
+  let editId = null;
+
+  // Load products from backend
+  async function fetchProducts() {
+    const res = await fetch(`${API_URL}?action=read`);
+    products = await res.json();
+    renderProducts();
+  }
+
+  // Render products to the grid
+  function renderProducts() {
+    productGrid.innerHTML = '';
+    products.forEach(product => {
+      const card = document.createElement("div");
+      card.className = "product-card";
+      card.innerHTML = `
+        <img src="${product.image}" alt="Product Image" />
+        <h3>${product.name}</h3>
+        <p>${product.description}</p>
+        <div class="price">₹${product.price} / ${product.amount}</div>
+        <div class="actions">
+          <button class="edit" onclick="prepareEdit(${product.id})">Edit</button>
+          <button class="delete" onclick="deleteProduct(${product.id})">Delete</button>
+        </div>
+      `;
+      productGrid.appendChild(card);
+    });
+  }
+function showAddModal() {
+  document.getElementById("productAddModal").style.display = "flex";
+  document.getElementById("addName").value = "";
+  document.getElementById("addDesc").value = "";
+  document.getElementById("addAmount").value = "";
+  document.getElementById("addQty").value = "";
+  document.getElementById("addImage").value = "";
+}
+
+function hideAddModal() {
+  document.getElementById("productAddModal").style.display = "none";
+}
+
+function showEditModal() {
+  document.getElementById("productEditModal").style.display = "flex";
+}
+
+function hideEditModal() {
+  document.getElementById("productEditModal").style.display = "none";
+}
+
+async function addProduct() {
+  const name = document.getElementById("addName").value;
+  const description = document.getElementById("addDesc").value;
+  const price = document.getElementById("addAmount").value;
+  const amount = document.getElementById("addQty").value;
+  const imageInput = document.getElementById("addImage");
+
+  if (!name || !description || !price || !amount) {
+    alert("Please fill all fields.");
+    return;
+  }
+
+  if (!imageInput.files.length) {
+    alert("Please upload an image.");
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = async function (e) {
+    const image = e.target.result;
+    const payload = new FormData();
+    payload.append("action", "create");
+    payload.append("name", name);
+    payload.append("description", description);
+    payload.append("price", price);
+    payload.append("amount", amount);
+    payload.append("image", image);
+
+    await fetch(API_URL, { method: "POST", body: payload });
+    hideAddModal();
+    fetchProducts();
+  };
+
+  reader.readAsDataURL(imageInput.files[0]);
+}
+
+function prepareEdit(id) {
+  const product = products.find(p => p.id == id);
+  if (!product) return;
+  editId = id;
+
+  document.getElementById("editName").value = product.name;
+  document.getElementById("editDesc").value = product.description;
+  document.getElementById("editAmount").value = product.price;
+  document.getElementById("editQty").value = product.amount;
+  document.getElementById("editImage").value = "";
+
+  const previewImage = document.getElementById("previewImage");
+  if (product.image) {
+    previewImage.src = product.image;
+    previewImage.style.display = "block";
+  } else {
+    previewImage.style.display = "none";
+  }
+
+  // ✅ Update preview on file change
+  document.getElementById("editImage").addEventListener("change", function () {
+    const file = this.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        previewImage.src = e.target.result;
+        previewImage.style.display = "block";
+      };
+      reader.readAsDataURL(file);
+    } else {
+      previewImage.style.display = "none";
+    }
+  });
+
+  showEditModal();
+}
+
+async function updateProduct() {
+  const name = document.getElementById("editName").value;
+  const description = document.getElementById("editDesc").value;
+  const price = document.getElementById("editAmount").value;
+  const amount = document.getElementById("editQty").value;
+  const imageInput = document.getElementById("editImage");
+
+  if (!name || !description || !price || !amount) {
+    alert("Please fill all fields.");
+    return;
+  }
+
+  const payload = new FormData();
+  payload.append("action", "update");
+  payload.append("id", editId);
+  payload.append("name", name);
+  payload.append("description", description);
+  payload.append("price", price);
+  payload.append("amount", amount);
+
+  if (imageInput.files.length) {
+    const reader = new FileReader();
+    reader.onload = async function (e) {
+      payload.append("image", e.target.result);
+      await fetch(API_URL, { method: "POST", body: payload });
+      hideEditModal();
+      fetchProducts();
+    };
+    reader.readAsDataURL(imageInput.files[0]);
+  } else {
+    const existingProduct = products.find(p => p.id == editId);
+    payload.append("image", existingProduct?.image || "");
+    await fetch(API_URL, { method: "POST", body: payload });
+    hideEditModal();
+    fetchProducts();
+  }
+}
+
+
+  async function deleteProduct(id) {
+    if (!confirm("Are you sure to delete this product?")) return;
+    const payload = new FormData();
+    payload.append("action", "delete");
+    payload.append("id", id);
+    await fetch(API_URL, { method: "POST", body: payload });
+    fetchProducts();
   }
 
   function logout() {
     localStorage.removeItem("isLoggedIn");
-    window.location.href = "login.html";
+    alert("Logged out successfully!");
+    window.location.href = "loginpage.html";
   }
 
-  let products = [];
-  let editIndex = null;
-
-  function showModal(isEdit = false) {
-    document.getElementById("productModal").style.display = "flex";
-    if (!isEdit) {
-      document.getElementById("pName").value = "";
-      document.getElementById("pDesc").value = "";
-      document.getElementById("pAmount").value = "";
-      document.getElementById("pCurrency").value = "₹";
-      document.getElementById("pQty").value = "";
-      document.getElementById("pImage").value = "";
-      document.getElementById("pVideo").value = "";
-      editIndex = null;
-    }
-  }
-
-  function hideModal() {
-    document.getElementById("productModal").style.display = "none";
-  }
-
-  function renderProducts() {
-    const grid = document.querySelector(".product-grid");
-    grid.innerHTML = "";
-
-    products.forEach((product, index) => {
-      const card = document.createElement("div");
-      card.className = "product-card";
-      card.innerHTML = `
-        <img src="${product.image}" />
-        <h3>${product.name}</h3>
-        <p>${product.desc}</p>
-        <div class="price">${product.price}</div>
-        ${product.video ? `<p><a href="${product.video}" target="_blank">Watch Video</a></p>` : ""}
-        <div class="actions">
-          <button class="edit" onclick="editProduct(${index})">Edit</button>
-          <button class="delete" onclick="deleteProduct(${index})">Delete</button>
-        </div>
-      `;
-      grid.appendChild(card);
-    });
-  }
-
-  function addProduct() {
-    const name = document.getElementById("pName").value;
-    const desc = document.getElementById("pDesc").value;
-    const amount = document.getElementById("pAmount").value;
-    const currency = document.getElementById("pCurrency").value;
-    const qty = document.getElementById("pQty").value;
-    const imageInput = document.getElementById("pImage");
-    const video = document.getElementById("pVideo").value;
-
-    if (!name || !desc || !amount || !qty || (!imageInput.files.length && editIndex === null)) {
-      alert("Please fill all required fields.");
-      return;
-    }
-
-    const fullPrice = `${currency}${amount} / ${qty}`;
-
-    const processProduct = (imageURL) => {
-      const productData = { name, desc, price: fullPrice, image: imageURL, video };
-
-      if (editIndex !== null) {
-        products[editIndex] = productData;
-      } else {
-        products.push(productData);
-      }
-
-      renderProducts();
-      hideModal();
-    };
-
-    if (imageInput.files.length) {
-      const reader = new FileReader();
-      reader.onload = (e) => processProduct(e.target.result);
-      reader.readAsDataURL(imageInput.files[0]);
-    } else {
-      processProduct(products[editIndex].image);
-    }
-  }
-
-  function editProduct(index) {
-    const product = products[index];
-    editIndex = index;
-
-    const [currencyAmount, qty] = product.price.split(" / ");
-    const currency = currencyAmount.charAt(0);
-    const amount = currencyAmount.slice(1);
-
-    document.getElementById("pName").value = product.name;
-    document.getElementById("pDesc").value = product.desc;
-    document.getElementById("pAmount").value = amount;
-    document.getElementById("pCurrency").value = currency;
-    document.getElementById("pQty").value = qty;
-    document.getElementById("pVideo").value = product.video;
-    document.getElementById("pImage").value = "";
-
-    showModal(true);
-  }
-
-  function deleteProduct(index) {
-    if (confirm("Are you sure you want to delete this product?")) {
-      products.splice(index, 1);
-      renderProducts();
-    }
-  }
-
-  // Dummy products for testing
-  products = [
-    {
-      name: "Raw Forest Honey",
-      desc: "Collected from dense forest regions, pure and organic.",
-      price: "₹299 / 500ml",
-      image: "https://images.unsplash.com/photo-1611415518015-b83a3f4aa0d0?auto=format&fit=crop&w=500&q=60",
-      video: ""
-    },
-    {
-      name: "Wildflower Honey",
-      desc: "Sourced from wildflowers, aromatic and golden.",
-      price: "₹249 / 250ml",
-      image: "https://images.unsplash.com/photo-1615485731898-d8e2c3e30db8?auto=format&fit=crop&w=500&q=60",
-      video: "https://www.youtube.com/watch?v=dummyvideo"
-    }
-  ];
-
-  renderProducts();
-  function logout() {
-  localStorage.removeItem("isLoggedIn");
-  alert("Logged out successfully!");
-  window.location.href = "login.html";
-}
-
+  // Initial fetch
+  fetchProducts();
 </script>
-
 
 </body>
 </html>
